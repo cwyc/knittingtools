@@ -72,4 +72,4 @@ for i in range(30):
 	y = y + pattern_hole_yspacing
     x = x + pattern_hole_xspacing
 
-print '<?xml version="1.0" encoding="UTF-8" standalone="no"?>{}'.format(diagram.tostring())
+print('<?xml version="1.0" encoding="UTF-8" standalone="no"?>{}'.format(diagram.tostring()))

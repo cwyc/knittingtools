@@ -24,8 +24,8 @@ import os
 import sys
 import traceback
 
-from BaseHTTPServer import BaseHTTPRequestHandler
-from BaseHTTPServer import HTTPServer
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer
 
 from handlers import actions
 
