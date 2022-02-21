@@ -107,7 +107,7 @@ class PCGenerator:
 			machine_id,
 			len(self.data[0]),
 			len(self.data),
-			machine_config['stitches'] / len(self.data[0]),
+			machine_config['stitches'] // len(self.data[0]),
 			vert_repeat,
 			is_blank,
 			is_solid_fill)

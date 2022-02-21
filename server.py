@@ -23,6 +23,7 @@ import logging.config
 import os
 import sys
 import traceback
+import io
 
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
@@ -64,12 +65,14 @@ logger = logging.getLogger('root')
 class MyHandler(BaseHTTPRequestHandler):
 
 	def handle_not_found(self):
+		wfile = io.TextIOWrapper(self.wfile)
 		self.send_response(404)
 		self.send_header('Content-type', 'text/html')
 		self.end_headers()
-		self.wfile.write(
+		wfile.write(
 			"<h1>Aw, snap! We seem to have a problem.</h1><p><b>")
-		self.wfile.write('The request resource was not found on this server.')
+		wfile.write('The request resource was not found on this server.')
+		wfile.detach()
 
 	def do_HEAD(self):
 		try:
