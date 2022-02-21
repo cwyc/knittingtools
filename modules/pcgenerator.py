@@ -96,7 +96,7 @@ class PCGenerator:
 		global machine_config
 
 		self.handler = handler
-                data_dir = os.path.join(os.path.dirname(__file__), '../data/')
+		data_dir = os.path.join(os.path.dirname(__file__), '../data/')
 		with open("{}/{}.json".format(data_dir, machine_id)) as json_config:
 			machine_config = json.loads(json_config.read())
 		if is_blank:

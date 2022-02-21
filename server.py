@@ -30,7 +30,7 @@ from BaseHTTPServer import HTTPServer
 from handlers import actions
 
 pcgenerator_actions = {
-        "head": actions.pcgenerator_head,
+	"head": actions.pcgenerator_head,
 	'get': actions.pcgenerator_get,
 	'post': actions.pcgenerator_post }
 
@@ -71,7 +71,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			"<h1>Aw, snap! We seem to have a problem.</h1><p><b>")
 		self.wfile.write('The request resource was not found on this server.')
 
-        def do_HEAD(self):
+	def do_HEAD(self):
 		try:
 			actions = template_map.get(self.path, None)
 			if actions is None:

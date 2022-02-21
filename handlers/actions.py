@@ -30,12 +30,12 @@ from modules.pcgenerator import calibrate
 
 def pcgenerator_head(handler, logger):
 
-        try:
+	try:
 		handler.send_response(200)
 		handler.send_header('Content-type', 'text/html')
 		handler.end_headers()
 
-                return
+		return
 
 	except Exception:
 		exc_type, exc_value, exc_traceback = sys.exc_info()

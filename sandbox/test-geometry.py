@@ -48,12 +48,12 @@ y = 10 + tractor_hole_yoffset
 for i in range(30):
     fill='green' if i == 0 else 'white'
     diagram.add(
-        diagram.circle(
-            center=(x,y),
-            fill=fill,
-            r = (tractor_hole_diameter / 2),
-            stroke='black',
-            stroke_width=.1))
+	diagram.circle(
+	    center=(x,y),
+	    fill=fill,
+	    r = (tractor_hole_diameter / 2),
+	    stroke='black',
+	    stroke_width=.1))
     y = y + tractor_hole_yspacing
 
 x = 10 + pattern_hole_xoffset
@@ -61,15 +61,15 @@ for i in range(30):
     fill='red' if i == 0 else 'white'
     y = 10 + pattern_hole_yoffset
     for j in range(30):
-        fill2='blue' if j == 0 else fill
-        diagram.add(
-            diagram.circle(
-                center=(x,y),
-                fill=fill2,
-                r = (pattern_hole_diameter / 2),
-                stroke='black',
-                stroke_width=.1))
-        y = y + pattern_hole_yspacing
+	fill2='blue' if j == 0 else fill
+	diagram.add(
+	    diagram.circle(
+	        center=(x,y),
+	        fill=fill2,
+	        r = (pattern_hole_diameter / 2),
+	        stroke='black',
+	        stroke_width=.1))
+	y = y + pattern_hole_yspacing
     x = x + pattern_hole_xspacing
 
 print '<?xml version="1.0" encoding="UTF-8" standalone="no"?>{}'.format(diagram.tostring())
