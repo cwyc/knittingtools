@@ -47,7 +47,7 @@ def calibrate():
 
 class Layout:
 
-	def __init__(self, machine_id, stitches, rows, horz_repeat, vert_repeat, is_blank, is_solid_fill):
+	def __init__(self, machine_id, stitches, rows, horz_repeat, vert_repeat, is_blank, is_solid_fill, use_laser_colors):
 
 		global machine_config
 
@@ -75,6 +75,7 @@ class Layout:
 			self.solid_fill = True
 		else:
 			self.solid_fill = is_solid_fill
+		self.use_laser_colors = use_laser_colors
 
 		self.card_rows = rows
 
@@ -92,7 +93,7 @@ class Layout:
 
 class PCGenerator:
 
-	def __init__(self, handler, data, machine_id, vert_repeat, is_blank = False, is_solid_fill = False):
+	def __init__(self, handler, data, machine_id, vert_repeat, is_blank = False, is_solid_fill = False, use_laser_colors = False):
 
 		global machine_config
 
@@ -111,32 +112,54 @@ class PCGenerator:
 			machine_config['stitches'] // len(self.data[0]),
 			vert_repeat,
 			is_blank,
-			is_solid_fill)
+			is_solid_fill,
+			use_laser_colors)
 
 	def generate(self):
 
-		diagram = self.create_card()
+		diagram, outline = self.create_card()
 
-		objects = []
+		cut = []
+		draw = []
+
 		if (self.layout.overlapping_rows and
 				self.layout.overlapping_row_xoffset and
 				self.layout.overlapping_row_yoffset):
-			self.draw_overlapped_lines(diagram, objects)
+			self.draw_overlapped_lines(diagram, cut)
 		if (self.layout.clip_hole_diameter and
 				self.layout.clip_hole_xoffset):
-			self.draw_clip_holes(diagram, objects)
+			self.draw_clip_holes(diagram, cut)
 		if (self.layout.tractor_hole_diameter and
 				self.layout.tractor_hole_xoffset):
-			self.draw_tractor_holes(diagram, objects)
+			self.draw_tractor_holes(diagram, cut)
 
 		if self.layout.is_blank:
 			self.layout.pattern_hole_diameter = .5
-		self.draw_pattern(diagram, self.data, objects)
+			self.draw_pattern(diagram, self.data, draw)
+		else:
+			self.draw_pattern(diagram, self.data, cut)
 
 		# sort the list to optimize cutting
-		sorted_objects = sorted(objects, key=lambda x: (float(x.attribs['cy']), float(x.attribs['cx'])))
-		for i in sorted_objects:
-			diagram.add(i)
+		sorted_cut = sorted(cut, key=lambda x: (float(x.attribs['cy']), float(x.attribs['cx'])))
+		sorted_cut.append(outline)
+		sorted_draw = sorted(draw, key=lambda x: (float(x.attribs['cy']), float(x.attribs['cx'])))
+
+		cut_group = diagram.g()
+		cut_group.attribs["id"] = "cut"
+		draw_group = diagram.g()
+		draw_group.attribs["id"] = "draw"
+
+		for i in sorted_cut:
+			if self.layout.use_laser_colors:
+				i.attribs["stroke"] = "#0000FF"
+			cut_group.add(i)
+		for i in sorted_draw:
+			if self.layout.use_laser_colors:
+				i.attribs["stroke"] = "#FF0000"
+			draw_group.add(i)
+
+		diagram.add(draw_group)
+		diagram.add(cut_group)
 
 		return '<?xml version="1.0" encoding="UTF-8" standalone="no"?>{}'.format(diagram.tostring())
 
@@ -151,13 +174,13 @@ class PCGenerator:
 				'0 0 {0} {1}'.format(self.layout.card_width, self.layout.card_height)),
 			preserveAspectRatio='none')
 
-		diagram.add(diagram.polygon(
+		outline = diagram.polygon(
 			points=self.get_card_shape(),
 			style="fill:none",
 			stroke='black',
-			stroke_width=.1))
+			stroke_width=.1)
 
-		return diagram
+		return diagram, outline
 
 	def draw_pattern(self, diagram, lines, objects):
 

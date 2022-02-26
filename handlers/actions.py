@@ -105,6 +105,7 @@ def pcgenerator_post(handler, logger):
 		calibrate_only = query.get('test', [''])[0] == 'test'
 		is_blank = query.get('blank', [''])[0] == 'blank'
 		is_solid_fill = query.get('fill', [''])[0] == 'fill'
+		use_laser_colors = query.get('laser', [''])[0] == 'laser'
 
 		result = None
 		filename_template = None
@@ -133,7 +134,8 @@ def pcgenerator_post(handler, logger):
 				machine_type[0],
 				int(vert_repeat[0]),
 				is_blank,
-				is_solid_fill)
+				is_solid_fill,
+				use_laser_colors)
 			result = generator.generate()
 			filename_template = 'attachment; filename="punchcard-{}.{}"'
 
