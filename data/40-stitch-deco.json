@@ -9,6 +9,7 @@
   "clip_hole_diameter": 3.5,
   "clip_hole_xoffset": 3.75,
   "clip_hole_yoffset": 5.5,
+  "clip_hole_skip_row" : 1,
   "tractor_hole_diameter": 3.0,
   "tractor_hole_xoffset": 14.0,
   "tractor_hole_yoffset": 5.5,

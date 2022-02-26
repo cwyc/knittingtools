@@ -62,6 +62,7 @@ class Layout:
 		self.clip_hole_diameter = machine_config['clip_hole_diameter']
 		self.clip_hole_xoffset = machine_config['clip_hole_xoffset']
 		self.clip_hole_yoffset = machine_config['clip_hole_yoffset']
+		self.clip_hole_skip_row = machine_config['clip_hole_skip_row']
 		self.tractor_hole_diameter = machine_config['tractor_hole_diameter']
 		self.tractor_hole_xoffset = machine_config['tractor_hole_xoffset']
 		self.tractor_hole_yoffset = machine_config['tractor_hole_yoffset']
@@ -229,7 +230,9 @@ class PCGenerator:
 			objects,
 			self.layout.clip_hole_xoffset,
 			self.layout.clip_hole_yoffset,
-			self.layout.clip_hole_diameter)
+			self.layout.clip_hole_diameter,
+			self.layout.clip_hole_skip_row
+			)
 
 	def draw_tractor_holes(self, diagram, objects):
 
@@ -240,7 +243,7 @@ class PCGenerator:
 			self.layout.tractor_hole_yoffset,
 			self.layout.tractor_hole_diameter)
 
-	def draw_side_holes(self, diagram, objects, xoffset, yoffset, diameter):
+	def draw_side_holes(self, diagram, objects, xoffset, yoffset, diameter, skip_row = 1):
 
 		left_xoffset = xoffset
 		right_xoffset = self.layout.card_width - left_xoffset
@@ -260,7 +263,7 @@ class PCGenerator:
 				r = (diameter / 2),
 				stroke='black',
 				stroke_width=.1))
-			yoffset += self.layout.row_height
+			yoffset += self.layout.row_height * skip_row
 
 			if (yoffset >= self.layout.card_height and
 					not self.layout.half_hole_at_bottom):
