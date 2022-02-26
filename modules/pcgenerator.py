@@ -39,7 +39,7 @@ def calibrate():
 	diagram.add(
 		diagram.polygon(
 			[(10,10), (90,10), (90,90), (10,90), (10,10)],
-			fill='white',
+			style="fill:none",
 			stroke='red',
 			stroke_width=.1))
 	return '<?xml version="1.0" encoding="UTF-8" standalone="no"?>{}'.format(diagram.tostring())
@@ -153,18 +153,13 @@ class PCGenerator:
 
 		diagram.add(diagram.polygon(
 			points=self.get_card_shape(),
-			fill='white',
+			style="fill:none",
 			stroke='black',
 			stroke_width=.1))
 
 		return diagram
 
 	def draw_pattern(self, diagram, lines, objects):
-
-		if self.layout.solid_fill:
-			fill = 'red'
-		else:
-			fill = 'white'
 
 		# main body of card
 		yoffset = self.layout.pattern_hole_yoffset
@@ -177,7 +172,7 @@ class PCGenerator:
 							if lines[rows][stitches].upper() == 'X':
 								objects.append(diagram.circle(
 									center=(xoffset, yoffset),
-									fill=fill,
+									style=None if self.layout.solid_fill else "fill:none",
 									r = (self.layout.pattern_hole_diameter / 2),
 									stroke='black',
 									stroke_width=.1))
@@ -201,7 +196,7 @@ class PCGenerator:
 				for stitches in range(self.layout.card_stitches):
 					objects.append(diagram.circle(
 						center=(xoffset, yoffset),
-						fill='white',
+						style="fill:none",
 						r = (self.layout.pattern_hole_diameter / 2),
 						stroke='black',
 						stroke_width=.1))
@@ -216,7 +211,7 @@ class PCGenerator:
 				for stitches in range(self.layout.card_stitches):
 					objects.append(diagram.circle(
 						center=(xoffset, yoffset),
-						fill='white',
+						style="fill:none",
 						r = (self.layout.pattern_hole_diameter / 2),
 						stroke='black',
 						stroke_width=.1))
@@ -252,14 +247,14 @@ class PCGenerator:
 			# holes on left
 			objects.append(diagram.circle(
 				center=(left_xoffset, yoffset),
-				fill='white',
+				style="fill:none",
 				r = (diameter / 2),
 				stroke='black',
 				stroke_width=.1))
 			# holes on right
 			objects.append(diagram.circle(
 				center=(right_xoffset, yoffset),
-				fill='white',
+				style="fill:none",
 				r = (diameter / 2),
 				stroke='black',
 				stroke_width=.1))
