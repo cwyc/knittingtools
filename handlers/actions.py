@@ -106,6 +106,7 @@ def pcgenerator_post(handler, logger):
 		is_blank = query.get('blank', [''])[0] == 'blank'
 		is_solid_fill = query.get('fill', [''])[0] == 'fill'
 		use_laser_colors = query.get('laser', [''])[0] == 'laser'
+		polygon_circle = query.get('polygon', [''])[0] == 'polygon'
 
 		result = None
 		filename_template = None
@@ -135,7 +136,8 @@ def pcgenerator_post(handler, logger):
 				int(vert_repeat[0]),
 				is_blank,
 				is_solid_fill,
-				use_laser_colors)
+				use_laser_colors, 
+				polygon_circle)
 			result = generator.generate()
 			filename_template = 'attachment; filename="punchcard-{}.{}"'
 

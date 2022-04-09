@@ -89,11 +89,23 @@ class Layout:
 		self.is_blank = is_blank
 
 		self.card_height = (self.pattern_hole_yoffset * 2) + (((self.card_rows * self.vert_repeat) - 1) * self.row_height)
-
+polygonTemplate = [
+	(.5, .866),
+	(1, 0),
+	(.5, -.866),
+	(-.5, -.866),
+	(-1, 0),
+	(-.5, .866),
+]
+def polygonCircleExtension(self):
+	def f(center=(0,0), r=1, **extra):
+		pts = [ (x*r+center[0], y*r+center[1]) for (x, y) in polygonTemplate]
+		return self.polygon(pts, **extra)
+	return f
 
 class PCGenerator:
 
-	def __init__(self, handler, data, machine_id, vert_repeat, is_blank = False, is_solid_fill = False, use_laser_colors = False):
+	def __init__(self, handler, data, machine_id, vert_repeat, is_blank = False, is_solid_fill = False, use_laser_colors = False, polygon_circle = False):
 
 		global machine_config
 
@@ -115,9 +127,14 @@ class PCGenerator:
 			is_solid_fill,
 			use_laser_colors)
 
+		self.polygon_circle = polygon_circle
+
 	def generate(self):
 
 		diagram, outline = self.create_card()
+
+		if self.polygon_circle:
+			diagram.circle = polygonCircleExtension(diagram)
 
 		cut = []
 		draw = []
@@ -140,9 +157,16 @@ class PCGenerator:
 			self.draw_pattern(diagram, self.data, cut)
 
 		# sort the list to optimize cutting
-		sorted_cut = sorted(cut, key=lambda x: (float(x.attribs['cy']), float(x.attribs['cx'])))
+		def center(x):
+			if type(x) == svgwrite.shapes.Circle:
+				return (float(x.attribs['cy']), float(x.attribs['cx']))
+			elif type(x) == svgwrite.shapes.Polygon:
+				return (x.points[0][1], x.points[0][0]) #just going by the first point, good enough
+			else:
+				raise Exception("shape not handled")
+		sorted_cut = sorted(cut, key=center)
 		sorted_cut.append(outline)
-		sorted_draw = sorted(draw, key=lambda x: (float(x.attribs['cy']), float(x.attribs['cx'])))
+		sorted_draw = sorted(draw, key=center)
 
 		cut_group = diagram.g()
 		cut_group.attribs["id"] = "cut"
